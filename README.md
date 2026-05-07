@@ -5,16 +5,24 @@ This project demonstrates a closed-loop Hardware-in-the-Loop (HIL) co-simulation
 
 By bypassing traditional game-engine physics, this architecture allows a highly detailed digital twin of a 300W DC motor and an Electronic Power Steering (EPS) system modeled in **MATLAB/Simulink** to actively drive an ego-vehicle (Tesla Model 3) inside the **CARLA Simulator** via the **Robot Operating System (ROS)**.
 
+📄 **[View the Full Co-Simulation Architecture Diagram (PDF)](Co-Simulation.pdf)**
+
 ## Development Milestones
 
 ### 1. The 3:1 Gear Ratio Baseline
 The project began by modeling basic rotational mechanics in Simulink. We established a foundational 3:1 mechanical reduction to understand how torque multiplication and angular velocity reduction affect a rotating shaft under load, acting as the baseline for our drivetrain calculations.
 
+![3 to 1 Gear Ratio Simulation](Output%20angle%20calculation%20using%203%20to%201%20gear%20ratio.png)
+
 ### 2. High-Torque 15:1 Gear Ratio
 To simulate the physical demands of moving a vehicle's mass from a standstill, the model was upgraded to a 15:1 gear ratio. This milestone focused on calculating the extreme torque required for acceleration and how to map that high-torque, low-speed output to a vehicle's traction limits without inducing tire slip.
 
+![15 to 1 Gear Ratio Simulation](Output%20angle%20calculation%20using%2015%20to%201%20gear%20ratio.png)
+
 ### 3. Electrical Drivetrain: 300 Watt DC Motor
 We replaced the theoretical torque inputs with a fully modeled electrical drivetrain. We modeled a physical 300W DC Traction Motor powered by a 24V battery system. To solve high-frequency simulation bottlenecks (e.g., simulating a 15 kHz PWM signal running at a 50% duty cycle alongside a 20 FPS game engine), we implemented **Average-Value Modeling**. This calculated the continuous average voltage ($V_{avg} = V_{bat} \times \text{Duty Cycle}$) to run the physics models in real-time without losing mechanical accuracy.
+
+![300W DC Motor Torque and Speed](Output%20torque%20and%20speed%20for%20300%20watt%20motor%20with%201%20to%205%20gear%20ratio.png)
 
 ### 4. ROS Integration & Closed-Loop Control
 The final milestone bridged the Simulink electrical models with the CARLA game engine. We bypassed CARLA's default Ackermann Python ECU and built a custom closed-loop PID controller directly in Simulink.
